@@ -7,7 +7,7 @@ class AddEmployee {
         this.middleNameInput = page.getByPlaceholder('Middle Name');
         this.lastNameInput = page.getByPlaceholder('Last Name');
         this.employeeIdInput = page.locator('.oxd-input-group:has(label:has-text("Employee Id")) input');
-        this.createLoginDetailsToggle = page.locator('div.oxd-form-row:has(p:has-text("Create Login Details")) input[type="checkbox"]');
+        this.createLoginDetailsToggle = page.locator('div.oxd-form-row:has(p:has-text("Create Login Details")) span.oxd-switch-input');
         this.userNameInput = page.locator('.oxd-input-group:has(label:has-text("Username")) input');
         this.statusRadioButton = page.getByRole('radio', { name: 'Enabled' });
         this.passwordInput = page.locator('.oxd-input-group:has(label:text-is("Password")) input');
@@ -30,7 +30,7 @@ class AddEmployee {
     }
 
     async enableLoginDetails() {
-        await this.createLoginDetailsToggle.click();
+        await this.createLoginDetailsToggle.check();
     }
 
     async fillLoginDetails(username, password) {
@@ -42,7 +42,8 @@ class AddEmployee {
 
     async save(){
          await this.saveButton.click();
+         await this.toastContainer.waitFor({ state: 'visible' });
     }
-    
+
 }
 module.exports = { AddEmployee };
