@@ -1,20 +1,8 @@
 const { test, expect } = require('@playwright/test');
 const { AddEmployee } = require('../pages/AddEmployee');
 const { LoginPage } = require('../pages/LoginPage');
+require('dotenv').config();
 
-// test('OrangeHRM Login Test', async ({ page }) => {
-//   const loginPage = new LoginPage(page);
-
-//   await loginPage.goto();
-//   await loginPage.login('Admin', 'admin123');
-
-//   await expect(page).toHaveURL(/dashboard/);
-
-//   // Save storage state (cookies + localStorage)
-//   await page.context().storageState({ path: 'storageState.json' });
-// });
-
-// test.use({ storageState: 'storageState.json' });
 var firstName = 'Salvin';
 var middleName = 'Earl';
 var lastName = 'Dasanayake';
@@ -27,10 +15,13 @@ test('Add Employee Test', async ({ page }) => {
     const addEmployee = new AddEmployee(page);
 
     await loginPage.goto();
-    await loginPage.login('Admin', 'admin123');
+    await loginPage.login(process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD);
 
     await addEmployee.gotoAddEmployee();
-    await addEmployee.addEmployee(firstName, middleName, lastName, employeeId, username, password);
+    await addEmployee.fillEmployeeData(firstName, middleName, lastName, employeeId);
+    await addEmployee.enableLoginDetails();
+    await addEmployee.fillLoginDetails(username, password);
+    await addEmployee.save();
 
     await expect(addEmployee.toastContainer).toContainText('Successfully');
 
