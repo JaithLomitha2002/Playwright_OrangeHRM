@@ -2,7 +2,11 @@
   "name": "playwright-practice",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "npx playwright test tests/example.spec.js --project=chromium",
+    "report": "node sendResults.js",
+    "test:notify": "npm run test & npm run report"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -12,6 +16,7 @@
     "@types/node": "^25.5.0"
   },
   "dependencies": {
+    "axios": "^1.13.6",
     "dotenv": "^17.3.1"
   }
 }
