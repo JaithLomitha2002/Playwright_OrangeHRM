@@ -1,0 +1,158 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "fromEmail": "djaithlomitha2002@gmail.com",
+        "toEmail": "jaithlomithadg@gmail.com",
+        "subject": "=Playwright Test Result",
+        "emailFormat": "=html",
+        "html": "=<h2 style=\"color: #2e7d32;\">🧪 Playwright Test Result: {{$json.status}}</h2>\n<p><strong>Total Tests:</strong> {{$json.total}}</p>\n<p><strong>Passed:</strong> {{$json.passed}}</p>\n<p><strong>Failed:</strong> {{$json.failed}}</p>\n<p><strong>Skipped:</strong> {{$json.skipped}}</p>\n<p><strong>Flaky:</strong> {{$json.flaky}}</p>\n<p><strong>Duration:</strong> {{$json.duration}} seconds</p>\n<hr>\n<p><strong>📎 Full detailed HTML report is attached below.</strong></p>\n<p><em>Run completed at: {{ $now.setZone('Asia/Colombo').toFormat(\"LLLL d, yyyy - hh:mm a\") }}</em></p>",
+        "options": {
+          "attachments": "report"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1072,
+        0
+      ],
+      "id": "e6590d42-3e90-42f3-ac35-669a05e835d3",
+      "name": "Send an Email",
+      "webhookId": "81e1af01-c937-43d0-8920-78ad24ff3154",
+      "credentials": {
+        "smtp": {
+          "id": "WCUAceg65x5Igspg",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "test-results",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "11d46bf3-a7c7-437f-be30-f16625ed0fcc",
+      "name": "Webhook",
+      "webhookId": "3be62557-2e2d-42fb-941e-5699e9973f06"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Safe version that handles both possible structures (direct or .body)\nconst incoming = $input.first().json || {};\nconst fullData = incoming.body || incoming;   // ← this is the key fix\nconst stats = fullData.stats || {};\n\nreturn [{\n  json: {\n    status: (stats.unexpected || 0) > 0 ? \"FAILED\" : \"PASSED\",\n    total: (stats.expected || 0) + (stats.unexpected || 0) + (stats.skipped || 0),\n    passed: stats.expected || 0,\n    failed: stats.unexpected || 0,\n    skipped: stats.skipped || 0,\n    flaky: stats.flaky || 0,\n    duration: stats.duration || 0\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        64
+      ],
+      "id": "c0c7915c-388e-49c9-9cc5-8e0508dd19ed",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "fileSelector": "F:/Playwright Practice/playwright-report/index.html",
+        "options": {
+          "fileName": "Playwright-Test-Report.html",
+          "mimeType": "text/html",
+          "dataPropertyName": "report"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        -112
+      ],
+      "id": "e5a2e261-b165-410a-bb9f-c105b77e1968",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        736,
+        0
+      ],
+      "id": "f6229266-a614-4cd5-be17-b2b89e6fbfe9",
+      "name": "Merge"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "505fbb95-bb1a-461a-8d12-22daed83c796",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cc979395b9f56ea3625cc1dfd497488405a33790f58df693781df1a6cd3e0332"
+  },
+  "id": "Btg4imC5lyF9aUIT",
+  "tags": []
+}

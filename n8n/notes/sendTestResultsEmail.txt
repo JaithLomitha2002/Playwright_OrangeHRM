@@ -1,0 +1,5 @@
+***Add all three variables as System Environment Variables in Windows to give the access to files***
+
+N8N_BLOCK_FS_READ_ACCESS = false
+N8N_BLOCK_FS_WRITE_ACCESS = false
+N8N_RESTRICT_FILE_ACCESS_TO = Path:/to/playwright/project
