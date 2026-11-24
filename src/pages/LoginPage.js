@@ -6,8 +6,8 @@ class LoginPage {
     this.loginButton = page.locator('button[type="submit"]');
   }
 
-  async goto() {
-    await this.page.goto('https://opensource-demo.orangehrmlive.com/');
+  async goto(url = 'https://opensource-demo.orangehrmlive.com/') {
+    await this.page.goto(url);
   }
 
   async login(username, password) {

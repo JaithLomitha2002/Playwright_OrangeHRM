@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test tests/example.spec.js --project=chromium",
+    "test": "npx playwright test --project=chromium",
     "report": "node sendResults.js",
     "test:notify": "npm run test & npm run report"
   },

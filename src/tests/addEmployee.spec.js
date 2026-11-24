@@ -1,16 +1,16 @@
 const { test, expect } = require('@playwright/test');
 const { AddEmployee } = require('../pages/AddEmployee');
 const { LoginPage } = require('../pages/LoginPage');
+const addEmployeeData = require('../test-data/addEmployee.json');
 require('dotenv').config();
 
 const uniqueId = Date.now().toString().slice(-4);
-
-var firstName = 'Salvin';
-var middleName = 'Earl';
-var lastName = 'Dasanayake';
-var employeeId = `emp${uniqueId}`;
-var username = `salvined${uniqueId}`;
-var password = '12345678sal';
+const firstName = addEmployeeData.firstName;
+const middleName = addEmployeeData.middleName;
+const lastName = addEmployeeData.lastName;
+const employeeId = `${addEmployeeData.employeeIdPrefix}${uniqueId}`;
+const username = `${addEmployeeData.usernamePrefix}${uniqueId}`;
+const password = addEmployeeData.password;
 
 test('Add Employee Test', async ({ page }) => {
     const loginPage = new LoginPage(page);
